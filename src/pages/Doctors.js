@@ -62,7 +62,7 @@ const Doctors = () => {
   const fetchDoctors = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/doctors');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/doctors');
       setDoctors(res.data);
     } catch (err) {
       setError('Failed to fetch doctors');
@@ -95,10 +95,10 @@ const Doctors = () => {
     try {
       setError('');
       if (selectedDoctor) {
-        const res = await axios.put(`http://localhost:5000/api/doctors/${selectedDoctor._id}`, formData);
+        const res = await axios.put(`https://pharmacy-backend-2onl.onrender.com/api/doctors/${selectedDoctor._id}`, formData);
         setDoctors(doctors.map(d => d._id === selectedDoctor._id ? res.data : d));
       } else {
-        const res = await axios.post('http://localhost:5000/api/doctors', formData);
+        const res = await axios.post('https://pharmacy-backend-2onl.onrender.com/api/doctors', formData);
         setDoctors([...doctors, res.data]);
       }
       setShowAddModal(false);
@@ -165,7 +165,7 @@ const Doctors = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this doctor?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/doctors/${id}`);
+        await axios.delete(`https://pharmacy-backend-2onl.onrender.com/api/doctors/${id}`);
         setDoctors(doctors.filter(d => d._id !== id));
       } catch (err) {
         setError('Failed to delete doctor');

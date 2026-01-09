@@ -35,7 +35,7 @@ const Conditions = () => {
   const fetchConditions = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/conditions');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/conditions');
       setConditions(res.data);
     } catch (err) {
       setError('Failed to fetch conditions');
@@ -48,7 +48,7 @@ const Conditions = () => {
   const fetchCategories = async () => {
     try {
       setCategoryLoading(true);
-      const res = await axios.get('http://localhost:5000/api/categories');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/categories');
       setCategories(res.data);
     } catch (err) {
       setError('Failed to fetch categories');
@@ -105,10 +105,10 @@ const Conditions = () => {
     try {
       setError('');
       if (selectedCondition) {
-        const res = await axios.put(`http://localhost:5000/api/conditions/${selectedCondition._id}`, formData);
+        const res = await axios.put(`https://pharmacy-backend-2onl.onrender.com/api/conditions/${selectedCondition._id}`, formData);
         setConditions(conditions.map(c => c._id === selectedCondition._id ? res.data : c));
       } else {
-        const res = await axios.post('http://localhost:5000/api/conditions', formData);
+        const res = await axios.post('https://pharmacy-backend-2onl.onrender.com/api/conditions', formData);
         setConditions([...conditions, res.data]);
       }
       setShowAddModal(false);
@@ -148,7 +148,7 @@ const Conditions = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this condition?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/conditions/${id}`);
+        await axios.delete(`https://pharmacy-backend-2onl.onrender.com/api/conditions/${id}`);
         setConditions(conditions.filter(c => c._id !== id));
       } catch (err) {
         setError('Failed to delete condition');

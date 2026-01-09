@@ -36,7 +36,7 @@ const Diseases = () => {
   const fetchDiseases = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/diseases');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/diseases');
       setDiseases(res.data);
     } catch (err) {
       setError('Failed to fetch diseases');
@@ -48,7 +48,7 @@ const Diseases = () => {
   const fetchCategories = async () => {
     try {
       setCategoryLoading(true);
-      const res = await axios.get('http://localhost:5000/api/categories');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/categories');
       setCategories(res.data);
     } catch (err) {
       setError('Failed to fetch categories');
@@ -92,10 +92,10 @@ const Diseases = () => {
     try {
       setError('');
       if (selectedDisease) {
-        const res = await axios.put(`http://localhost:5000/api/diseases/${selectedDisease._id}`, formData);
+        const res = await axios.put(`https://pharmacy-backend-2onl.onrender.com/api/diseases/${selectedDisease._id}`, formData);
         setDiseases(diseases.map(d => d._id === selectedDisease._id ? res.data : d));
       } else {
-        const res = await axios.post('http://localhost:5000/api/diseases', formData);
+        const res = await axios.post('https://pharmacy-backend-2onl.onrender.com/api/diseases', formData);
         setDiseases([...diseases, res.data]);
       }
       setShowAddModal(false);
@@ -136,7 +136,7 @@ const Diseases = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this disease?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/diseases/${id}`);
+        await axios.delete(`https://pharmacy-backend-2onl.onrender.com/api/diseases/${id}`);
         setDiseases(diseases.filter(d => d._id !== id));
       } catch (err) {
         setError('Failed to delete disease');

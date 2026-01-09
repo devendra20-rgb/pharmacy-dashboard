@@ -35,7 +35,7 @@ const WellBeing = () => {
   const fetchWellBeings = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/well-being');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/well-being');
       setWellBeings(res.data);
     } catch (err) {
       setError('Failed to fetch well-being topics');
@@ -48,7 +48,7 @@ const WellBeing = () => {
   const fetchCategories = async () => {
     try {
       setCategoryLoading(true);
-      const res = await axios.get('http://localhost:5000/api/categories');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/categories');
       setCategories(res.data);
     } catch (err) {
       setError('Failed to fetch categories');
@@ -105,10 +105,10 @@ const WellBeing = () => {
     try {
       setError('');
       if (selectedWellBeing) {
-        const res = await axios.put(`http://localhost:5000/api/well-being/${selectedWellBeing._id}`, formData);
+        const res = await axios.put(`https://pharmacy-backend-2onl.onrender.com/api/well-being/${selectedWellBeing._id}`, formData);
         setWellBeings(wellBeings.map(w => w._id === selectedWellBeing._id ? res.data : w));
       } else {
-        const res = await axios.post('http://localhost:5000/api/well-being', formData);
+        const res = await axios.post('https://pharmacy-backend-2onl.onrender.com/api/well-being', formData);
         setWellBeings([...wellBeings, res.data]);
       }
       setShowAddModal(false);
@@ -148,7 +148,7 @@ const WellBeing = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this well-being topic?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/well-being/${id}`);
+        await axios.delete(`https://pharmacy-backend-2onl.onrender.com/api/well-being/${id}`);
         setWellBeings(wellBeings.filter(w => w._id !== id));
       } catch (err) {
         setError('Failed to delete well-being topic');

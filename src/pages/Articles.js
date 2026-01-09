@@ -36,7 +36,7 @@ const Articles = () => {
   const fetchArticles = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/articles');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/articles');
       setArticles(res.data);
     } catch (err) {
       setError('Failed to fetch articles');
@@ -49,7 +49,7 @@ const Articles = () => {
   const fetchCategories = async () => {
     try {
       setCategoryLoading(true);
-      const res = await axios.get('http://localhost:5000/api/categories');
+      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/categories');
       setCategories(res.data); // Cache in state
     } catch (err) {
       setError('Failed to fetch categories');
@@ -88,10 +88,10 @@ const Articles = () => {
     try {
       setError('');
       if (selectedArticle) {
-        const res = await axios.put(`http://localhost:5000/api/articles/${selectedArticle._id}`, formData);
+        const res = await axios.put(`https://pharmacy-backend-2onl.onrender.com/api/articles/${selectedArticle._id}`, formData);
         setArticles(articles.map(a => a._id === selectedArticle._id ? res.data : a));
       } else {
-        const res = await axios.post('http://localhost:5000/api/articles', formData);
+        const res = await axios.post('https://pharmacy-backend-2onl.onrender.com/api/articles', formData);
         setArticles([...articles, res.data]);
       }
       setShowAddModal(false);
@@ -130,7 +130,7 @@ const Articles = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this article?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/articles/${id}`);
+        await axios.delete(`https://pharmacy-backend-2onl.onrender.com/api/articles/${id}`);
         setArticles(articles.filter(a => a._id !== id));
       } catch (err) {
         setError('Failed to delete article');
