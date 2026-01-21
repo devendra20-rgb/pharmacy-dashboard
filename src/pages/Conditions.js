@@ -1,8 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Button, Table, Modal, Form, Badge, Alert, Row, Col, Spinner } from 'react-bootstrap';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  Button,
+  Table,
+  Modal,
+  Form,
+  Badge,
+  Alert,
+  Row,
+  Col,
+  Spinner,
+} from "react-bootstrap";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import axios from "axios";
 
 const Conditions = () => {
   const [conditions, setConditions] = useState([]);
@@ -14,18 +25,27 @@ const Conditions = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
-    category: '', // _id from select
-    image: { url: '', alt: '', caption: '' },
-    sections: [{
-      title: '',
-      blocks: [{ heading: '', content: '', bullets: [], image: { url: '', alt: '', caption: '' } }]
-    }],
-    seo: { metaTitle: '', metaDescription: '', keywords: [] },
+    name: "",
+    category: "", // _id from select
+    image: { url: "", alt: "", caption: "" },
+    sections: [
+      {
+        title: "",
+        blocks: [
+          {
+            heading: "",
+            content: "",
+            bullets: [],
+            image: { url: "", alt: "", caption: "" },
+          },
+        ],
+      },
+    ],
+    seo: { metaTitle: "", metaDescription: "", keywords: [] },
     tags: [],
     isPublished: true,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchConditions();
@@ -35,10 +55,12 @@ const Conditions = () => {
   const fetchConditions = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/conditions');
+      const res = await axios.get(
+        "https://pharmacy-backend-2onl.onrender.com/api/conditions"
+      );
       setConditions(res.data);
     } catch (err) {
-      setError('Failed to fetch conditions');
+      setError("Failed to fetch conditions");
     } finally {
       setLoading(false);
     }
@@ -48,10 +70,12 @@ const Conditions = () => {
   const fetchCategories = async () => {
     try {
       setCategoryLoading(true);
-      const res = await axios.get('https://pharmacy-backend-2onl.onrender.com/api/categories');
+      const res = await axios.get(
+        "https://pharmacy-backend-2onl.onrender.com/api/categories"
+      );
       setCategories(res.data);
     } catch (err) {
-      setError('Failed to fetch categories');
+      setError("Failed to fetch categories");
     } finally {
       setCategoryLoading(false);
     }
@@ -60,13 +84,31 @@ const Conditions = () => {
   const handleAddSection = () => {
     setFormData({
       ...formData,
-      sections: [...formData.sections, { title: '', blocks: [{ heading: '', content: '', bullets: [], image: { url: '', alt: '', caption: '' } }] }],
+      sections: [
+        ...formData.sections,
+        {
+          title: "",
+          blocks: [
+            {
+              heading: "",
+              content: "",
+              bullets: [],
+              image: { url: "", alt: "", caption: "" },
+            },
+          ],
+        },
+      ],
     });
   };
 
   const handleAddBlock = (sectionIndex) => {
     const newSections = [...formData.sections];
-    newSections[sectionIndex].blocks.push({ heading: '', content: '', bullets: [], image: { url: '', alt: '', caption: '' } });
+    newSections[sectionIndex].blocks.push({
+      heading: "",
+      content: "",
+      bullets: [],
+      image: { url: "", alt: "", caption: "" },
+    });
     setFormData({ ...formData, sections: newSections });
   };
 
@@ -78,10 +120,10 @@ const Conditions = () => {
 
   const handleUpdateBlock = (sectionIndex, blockIndex, field, value) => {
     const newSections = [...formData.sections];
-    if (field === 'bullets') {
+    if (field === "bullets") {
       newSections[sectionIndex].blocks[blockIndex].bullets = value;
-    } else if (field.startsWith('image.')) {
-      const imgField = field.split('.')[1];
+    } else if (field.startsWith("image.")) {
+      const imgField = field.split(".")[1];
       newSections[sectionIndex].blocks[blockIndex].image[imgField] = value;
     } else {
       newSections[sectionIndex].blocks[blockIndex][field] = value;
@@ -96,45 +138,66 @@ const Conditions = () => {
 
   const handleRemoveBlock = (sectionIndex, blockIndex) => {
     const newSections = [...formData.sections];
-    newSections[sectionIndex].blocks = newSections[sectionIndex].blocks.filter((_, i) => i !== blockIndex);
+    newSections[sectionIndex].blocks = newSections[sectionIndex].blocks.filter(
+      (_, i) => i !== blockIndex
+    );
     setFormData({ ...formData, sections: newSections });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setError('');
+      setError("");
       if (selectedCondition) {
-        const res = await axios.put(`https://pharmacy-backend-2onl.onrender.com/api/conditions/${selectedCondition._id}`, formData);
-        setConditions(conditions.map(c => c._id === selectedCondition._id ? res.data : c));
+        const res = await axios.put(
+          `https://pharmacy-backend-2onl.onrender.com/api/conditions/${selectedCondition._id}`,
+          formData
+        );
+        setConditions(
+          conditions.map((c) =>
+            c._id === selectedCondition._id ? res.data : c
+          )
+        );
       } else {
-        const res = await axios.post('https://pharmacy-backend-2onl.onrender.com/api/conditions', formData);
+        const res = await axios.post(
+          "https://pharmacy-backend-2onl.onrender.com/api/conditions",
+          formData
+        );
         setConditions([...conditions, res.data]);
       }
       setShowAddModal(false);
       setShowEditModal(false);
       setSelectedCondition(null);
       setFormData({
-        name: '',
-        category: '',
-        image: { url: '', alt: '', caption: '' },
-        sections: [{
-          title: '',
-          blocks: [{ heading: '', content: '', bullets: [], image: { url: '', alt: '', caption: '' } }]
-        }],
-        seo: { metaTitle: '', metaDescription: '', keywords: [] },
+        name: "",
+        category: "",
+        image: { url: "", alt: "", caption: "" },
+        sections: [
+          {
+            title: "",
+            blocks: [
+              {
+                heading: "",
+                content: "",
+                bullets: [],
+                image: { url: "", alt: "", caption: "" },
+              },
+            ],
+          },
+        ],
+        seo: { metaTitle: "", metaDescription: "", keywords: [] },
         tags: [],
         isPublished: true,
       });
     } catch (err) {
-      setError(err.response?.data?.message || 'Error saving condition');
+      setError(err.response?.data?.message || "Error saving condition");
     }
   };
 
   const handleEdit = (condition) => {
     setFormData({
       ...condition,
-      category: condition.category?._id || condition.category || '',
+      category: condition.category?._id || condition.category || "",
     });
     setSelectedCondition(condition);
     setShowEditModal(true);
@@ -146,23 +209,25 @@ const Conditions = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Delete this condition?')) {
+    if (window.confirm("Delete this condition?")) {
       try {
-        await axios.delete(`https://pharmacy-backend-2onl.onrender.com/api/conditions/${id}`);
-        setConditions(conditions.filter(c => c._id !== id));
+        await axios.delete(
+          `https://pharmacy-backend-2onl.onrender.com/api/conditions/${id}`
+        );
+        setConditions(conditions.filter((c) => c._id !== id));
       } catch (err) {
-        setError('Failed to delete condition');
+        setError("Failed to delete condition");
       }
     }
   };
 
   const handleAddTag = (e) => {
-    if (e.key === 'Enter' && e.target.value) {
+    if (e.key === "Enter" && e.target.value) {
       setFormData({
         ...formData,
         tags: [...formData.tags, e.target.value],
       });
-      e.target.value = '';
+      e.target.value = "";
     }
   };
 
@@ -172,13 +237,19 @@ const Conditions = () => {
   };
 
   if (loading || categoryLoading) {
-    return <div className="text-center p-5"><Spinner animation="border" /></div>;
+    return (
+      <div className="text-center p-5">
+        <Spinner animation="border" />
+      </div>
+    );
   }
 
   return (
     <>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2><i className="fas fa-stethoscope me-2"></i>Manage Conditions</h2>
+        <h2>
+          <i className="fas fa-stethoscope me-2"></i>Manage Conditions
+        </h2>
         <Button variant="primary" onClick={() => setShowAddModal(true)}>
           <i className="fas fa-plus me-2"></i>Add New Condition
         </Button>
@@ -199,24 +270,38 @@ const Conditions = () => {
               </tr>
             </thead>
             <tbody>
-              {conditions.map(condition => (
+              {conditions.map((condition) => (
                 <tr key={condition._id}>
                   <td>{condition.name}</td>
-                  <td>{condition.category?.name || 'Uncategorized'}</td>
+                  <td>{condition.category?.name || "Uncategorized"}</td>
                   <td>{new Date(condition.createdAt).toLocaleDateString()}</td>
                   <td>
-                    <Badge bg={condition.isPublished ? 'success' : 'warning'}>
-                      {condition.isPublished ? 'Published' : 'Draft'}
+                    <Badge bg={condition.isPublished ? "success" : "warning"}>
+                      {condition.isPublished ? "Published" : "Draft"}
                     </Badge>
                   </td>
                   <td>
-                    <Button variant="outline-primary" size="sm" className="me-1" onClick={() => handleView(condition)}>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="me-1"
+                      onClick={() => handleView(condition)}
+                    >
                       <i className="fas fa-eye"></i> View
                     </Button>
-                    <Button variant="outline-primary" size="sm" className="me-1" onClick={() => handleEdit(condition)}>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="me-1"
+                      onClick={() => handleEdit(condition)}
+                    >
                       <i className="fas fa-edit"></i> Edit
                     </Button>
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(condition._id)}>
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => handleDelete(condition._id)}
+                    >
                       <i className="fas fa-trash"></i> Delete
                     </Button>
                   </td>
@@ -229,13 +314,19 @@ const Conditions = () => {
 
       {/* Add/Edit Modal */}
       {(showAddModal || showEditModal) && (
-        <Modal show={true} onHide={() => {
-          setShowAddModal(false);
-          setShowEditModal(false);
-          setSelectedCondition(null);
-        }} size="xl">
+        <Modal
+          show={true}
+          onHide={() => {
+            setShowAddModal(false);
+            setShowEditModal(false);
+            setSelectedCondition(null);
+          }}
+          size="xl"
+        >
           <Modal.Header closeButton>
-            <Modal.Title>{selectedCondition ? 'Edit Condition' : 'Add New Condition'}</Modal.Title>
+            <Modal.Title>
+              {selectedCondition ? "Edit Condition" : "Add New Condition"}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form onSubmit={handleSubmit}>
@@ -246,7 +337,9 @@ const Conditions = () => {
                     <Form.Control
                       type="text"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       required
                     />
                   </Form.Group>
@@ -255,10 +348,12 @@ const Conditions = () => {
                     <Form.Label>Category</Form.Label>
                     <Form.Select
                       value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, category: e.target.value })
+                      }
                     >
                       <option value="">Select Category</option>
-                      {categories.map(category => (
+                      {categories.map((category) => (
                         <option key={category._id} value={category._id}>
                           {category.name}
                         </option>
@@ -270,7 +365,12 @@ const Conditions = () => {
                     <Form.Control
                       type="url"
                       value={formData.image.url}
-                      onChange={(e) => setFormData({ ...formData, image: { ...formData.image, url: e.target.value } })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          image: { ...formData.image, url: e.target.value },
+                        })
+                      }
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -278,7 +378,12 @@ const Conditions = () => {
                     <Form.Control
                       type="text"
                       value={formData.image.alt}
-                      onChange={(e) => setFormData({ ...formData, image: { ...formData.image, alt: e.target.value } })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          image: { ...formData.image, alt: e.target.value },
+                        })
+                      }
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -286,7 +391,12 @@ const Conditions = () => {
                     <Form.Control
                       type="text"
                       value={formData.image.caption}
-                      onChange={(e) => setFormData({ ...formData, image: { ...formData.image, caption: e.target.value } })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          image: { ...formData.image, caption: e.target.value },
+                        })
+                      }
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -299,7 +409,14 @@ const Conditions = () => {
                     <div className="mt-2">
                       {formData.tags.map((tag, index) => (
                         <Badge key={index} bg="secondary" className="me-1 mb-1">
-                          {tag} <Button variant="link" size="sm" onClick={() => handleRemoveTag(index)}>×</Button>
+                          {tag}{" "}
+                          <Button
+                            variant="link"
+                            size="sm"
+                            onClick={() => handleRemoveTag(index)}
+                          >
+                            ×
+                          </Button>
                         </Badge>
                       ))}
                     </div>
@@ -309,7 +426,12 @@ const Conditions = () => {
                       type="checkbox"
                       label="Published"
                       checked={formData.isPublished}
-                      onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          isPublished: e.target.checked,
+                        })
+                      }
                     />
                   </Form.Group>
                   {/* Sections */}
@@ -322,7 +444,13 @@ const Conditions = () => {
                         <Form.Control
                           type="text"
                           value={section.title}
-                          onChange={(e) => handleUpdateSection(sectionIndex, 'title', e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateSection(
+                              sectionIndex,
+                              "title",
+                              e.target.value
+                            )
+                          }
                         />
                       </Form.Group>
                       <h6>Blocks in this Section</h6>
@@ -333,7 +461,14 @@ const Conditions = () => {
                             <Form.Control
                               type="text"
                               value={block.heading}
-                              onChange={(e) => handleUpdateBlock(sectionIndex, blockIndex, 'heading', e.target.value)}
+                              onChange={(e) =>
+                                handleUpdateBlock(
+                                  sectionIndex,
+                                  blockIndex,
+                                  "heading",
+                                  e.target.value
+                                )
+                              }
                             />
                           </Form.Group>
                           <Form.Group className="mb-1">
@@ -341,15 +476,31 @@ const Conditions = () => {
                             <ReactQuill
                               theme="snow"
                               value={block.content}
-                              onChange={(val) => handleUpdateBlock(sectionIndex, blockIndex, 'content', val)}
+                              onChange={(val) =>
+                                handleUpdateBlock(
+                                  sectionIndex,
+                                  blockIndex,
+                                  "content",
+                                  val
+                                )
+                              }
                             />
                           </Form.Group>
                           <Form.Group className="mb-1">
                             <Form.Label>Bullets (comma-separated)</Form.Label>
                             <Form.Control
                               type="text"
-                              value={block.bullets.join(', ')}
-                              onChange={(e) => handleUpdateBlock(sectionIndex, blockIndex, 'bullets', e.target.value.split(', ').filter(b => b.trim()))}
+                              value={block.bullets.join(", ")}
+                              onChange={(e) =>
+                                handleUpdateBlock(
+                                  sectionIndex,
+                                  blockIndex,
+                                  "bullets",
+                                  e.target.value
+                                    .split(", ")
+                                    .filter((b) => b.trim())
+                                )
+                              }
                             />
                           </Form.Group>
                           <Form.Group className="mb-1">
@@ -357,7 +508,14 @@ const Conditions = () => {
                             <Form.Control
                               type="url"
                               value={block.image.url}
-                              onChange={(e) => handleUpdateBlock(sectionIndex, blockIndex, 'image.url', e.target.value)}
+                              onChange={(e) =>
+                                handleUpdateBlock(
+                                  sectionIndex,
+                                  blockIndex,
+                                  "image.url",
+                                  e.target.value
+                                )
+                              }
                             />
                           </Form.Group>
                           <Form.Group className="mb-1">
@@ -365,7 +523,14 @@ const Conditions = () => {
                             <Form.Control
                               type="text"
                               value={block.image.alt}
-                              onChange={(e) => handleUpdateBlock(sectionIndex, blockIndex, 'image.alt', e.target.value)}
+                              onChange={(e) =>
+                                handleUpdateBlock(
+                                  sectionIndex,
+                                  blockIndex,
+                                  "image.alt",
+                                  e.target.value
+                                )
+                              }
                             />
                           </Form.Group>
                           <Form.Group className="mb-1">
@@ -373,23 +538,49 @@ const Conditions = () => {
                             <Form.Control
                               type="text"
                               value={block.image.caption}
-                              onChange={(e) => handleUpdateBlock(sectionIndex, blockIndex, 'image.caption', e.target.value)}
+                              onChange={(e) =>
+                                handleUpdateBlock(
+                                  sectionIndex,
+                                  blockIndex,
+                                  "image.caption",
+                                  e.target.value
+                                )
+                              }
                             />
                           </Form.Group>
-                          <Button variant="outline-danger" size="sm" onClick={() => handleRemoveBlock(sectionIndex, blockIndex)}>
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() =>
+                              handleRemoveBlock(sectionIndex, blockIndex)
+                            }
+                          >
                             Remove Block
                           </Button>
                         </div>
                       ))}
-                      <Button variant="outline-secondary" size="sm" onClick={() => handleAddBlock(sectionIndex)}>
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() => handleAddBlock(sectionIndex)}
+                      >
                         Add Block
                       </Button>
-                      <Button variant="outline-danger" size="sm" className="ms-2" onClick={() => handleRemoveSection(sectionIndex)}>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        className="ms-2"
+                        onClick={() => handleRemoveSection(sectionIndex)}
+                      >
                         Remove Section
                       </Button>
                     </div>
                   ))}
-                  <Button variant="outline-secondary" size="sm" onClick={handleAddSection}>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={handleAddSection}
+                  >
                     Add Section
                   </Button>
                   {/* SEO */}
@@ -399,7 +590,12 @@ const Conditions = () => {
                     <Form.Control
                       type="text"
                       value={formData.seo.metaTitle}
-                      onChange={(e) => setFormData({ ...formData, seo: { ...formData.seo, metaTitle: e.target.value } })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          seo: { ...formData.seo, metaTitle: e.target.value },
+                        })
+                      }
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -407,7 +603,15 @@ const Conditions = () => {
                     <Form.Control
                       type="text"
                       value={formData.seo.metaDescription}
-                      onChange={(e) => setFormData({ ...formData, seo: { ...formData.seo, metaDescription: e.target.value } })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          seo: {
+                            ...formData.seo,
+                            metaDescription: e.target.value,
+                          },
+                        })
+                      }
                     />
                   </Form.Group>
                 </Col>
@@ -415,12 +619,19 @@ const Conditions = () => {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => {
-              setShowAddModal(false);
-              setShowEditModal(false);
-              setSelectedCondition(null);
-            }}>Cancel</Button>
-            <Button variant="primary" onClick={handleSubmit}>Save</Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowAddModal(false);
+                setShowEditModal(false);
+                setSelectedCondition(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleSubmit}>
+              Save
+            </Button>
           </Modal.Footer>
         </Modal>
       )}
@@ -433,11 +644,25 @@ const Conditions = () => {
           </Modal.Header>
           <Modal.Body>
             <h4>{selectedCondition.name}</h4>
-            <p><strong>Category:</strong> {selectedCondition.category?.name || 'Uncategorized'}</p>
-            <p><strong>Published:</strong> {new Date(selectedCondition.createdAt).toLocaleDateString()}</p>
-            <p><strong>Status:</strong> {selectedCondition.isPublished ? 'Published' : 'Draft'}</p>
+            <p>
+              <strong>Category:</strong>{" "}
+              {selectedCondition.category?.name || "Uncategorized"}
+            </p>
+            <p>
+              <strong>Published:</strong>{" "}
+              {new Date(selectedCondition.createdAt).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {selectedCondition.isPublished ? "Published" : "Draft"}
+            </p>
             {selectedCondition.image.url && (
-              <img src={selectedCondition.image.url} alt={selectedCondition.image.alt} className="img-fluid mb-3" style={{ maxHeight: '200px' }} />
+              <img
+                src={selectedCondition.image.url}
+                alt={selectedCondition.image.alt}
+                className="img-fluid mb-3"
+                style={{ maxHeight: "200px" }}
+              />
             )}
             {selectedCondition.sections.map((section, sectionIndex) => (
               <div key={sectionIndex} className="mb-4">
@@ -448,22 +673,38 @@ const Conditions = () => {
                     <div dangerouslySetInnerHTML={{ __html: block.content }} />
                     {block.bullets.length > 0 && (
                       <ul>
-                        {block.bullets.map((bullet, bIndex) => <li key={bIndex}>{bullet}</li>)}
+                        {block.bullets.map((bullet, bIndex) => (
+                          <li key={bIndex}>{bullet}</li>
+                        ))}
                       </ul>
                     )}
                     {block.image.url && (
-                      <img src={block.image.url} alt={block.image.alt} className="img-fluid" style={{ maxHeight: '200px' }} />
+                      <img
+                        src={block.image.url}
+                        alt={block.image.alt}
+                        className="img-fluid"
+                        style={{ maxHeight: "200px" }}
+                      />
                     )}
                   </div>
                 ))}
               </div>
             ))}
-            <p><strong>Tags:</strong> {selectedCondition.tags.join(', ')}</p>
-            <p><strong>SEO Meta Title:</strong> {selectedCondition.seo.metaTitle}</p>
-            <p><strong>SEO Meta Description:</strong> {selectedCondition.seo.metaDescription}</p>
+            <p>
+              <strong>Tags:</strong> {selectedCondition.tags.join(", ")}
+            </p>
+            <p>
+              <strong>SEO Meta Title:</strong> {selectedCondition.seo.metaTitle}
+            </p>
+            <p>
+              <strong>SEO Meta Description:</strong>{" "}
+              {selectedCondition.seo.metaDescription}
+            </p>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowViewModal(false)}>Close</Button>
+            <Button variant="secondary" onClick={() => setShowViewModal(false)}>
+              Close
+            </Button>
           </Modal.Footer>
         </Modal>
       )}
